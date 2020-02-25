@@ -1,6 +1,6 @@
 
 
-def calculateWinner(team1, team2, team1Dict, team2Dict):
+def calculateWinner(team1, team2, team1Dict, team2Dict, spreads):
     team1score = 0
     team2score = 0
     running_spread =[]
@@ -33,9 +33,12 @@ def calculateWinner(team1, team2, team1Dict, team2Dict):
         spread += diff
 
     spread = spread/len(running_spread)
-    print(str(team1score) + " vs " + str(team2score))
+    spreads.append([team1,team2,spread, -spread])
+    # print(str(team1score) + " vs " + str(team2score))
 
-    if spread > 0 :
-        print ("spread: +" + str(spread))
-    else :
-        print ("spread: " + str(spread))
+    # if spread > 0 :
+    #     print ("spread: +" + str(spread))
+    # else :
+    #     print ("spread: " + str(spread))
+
+

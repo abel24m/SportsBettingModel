@@ -1,7 +1,7 @@
 
 
 def populateGameDataHome(seasonGame, teamDict):
-    awayteam = seasonGame["away"]["alias"]
+    awayteam = seasonGame["away"]["name"]
     awaypoints = seasonGame["away_points"]
     homepoints = seasonGame["home_points"]
     diff = abs(homepoints - awaypoints)
@@ -14,7 +14,7 @@ def populateGameDataHome(seasonGame, teamDict):
 
 
 def populateGameDataAway(seasonGame, teamDict):
-    hometeam = seasonGame["home"]["alias"]
+    hometeam = seasonGame["home"]["name"]
     awaypoints = seasonGame["away_points"]
     homepoints = seasonGame["home_points"]
     diff = abs(homepoints - awaypoints)
