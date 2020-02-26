@@ -13,21 +13,21 @@ def calculateWinner(team1, team2, team1Dict, team2Dict, spreads):
                 elif team1Dict[oppTeam1][0] == 'l' and team2Dict[oppTeam2][0] == 'w':
                     running_spread.append((team2Dict[oppTeam2][1] + team1Dict[oppTeam1][1]))
                     team2score += 2
-                # else:
-                #     if team1Dict[oppTeam1][0] == 'w':
-                #         if team1Dict[oppTeam1][1] > team2Dict[oppTeam2][1]:
-                #             running_spread.append(-(team1Dict[oppTeam1][1] - team2Dict[oppTeam2][1]))
-                #             team1score += 1
-                #         elif team1Dict[oppTeam1][1] < team2Dict[oppTeam2][1]:
-                #             running_spread.append((team2Dict[oppTeam2][1] - team1Dict[oppTeam1][1]))
-                #             team2score += 1
-                #     if team1Dict[oppTeam1][0] == 'l':
-                #         if team1Dict[oppTeam1][1] < team2Dict[oppTeam2][1]:
-                #             running_spread.append(-(team1Dict[oppTeam1][1] - team2Dict[oppTeam2][1]))
-                #             team1score += 1
-                #         elif team1Dict[oppTeam1][1] > team2Dict[oppTeam2][1]:
-                #             running_spread.append((team2Dict[oppTeam2][1] - team1Dict[oppTeam1][1]))
-                #             team2score += 1
+                else:
+                    if team1Dict[oppTeam1][0] == 'w':
+                        if team1Dict[oppTeam1][1] > team2Dict[oppTeam2][1]:
+                            running_spread.append(-(team1Dict[oppTeam1][1] - team2Dict[oppTeam2][1]))
+                            team1score += 1
+                        elif team1Dict[oppTeam1][1] < team2Dict[oppTeam2][1]:
+                            running_spread.append((team2Dict[oppTeam2][1] - team1Dict[oppTeam1][1]))
+                            team2score += 1
+                    if team1Dict[oppTeam1][0] == 'l':
+                        if team1Dict[oppTeam1][1] < team2Dict[oppTeam2][1]:
+                            running_spread.append(-(team1Dict[oppTeam1][1] - team2Dict[oppTeam2][1]))
+                            team1score += 1
+                        elif team1Dict[oppTeam1][1] > team2Dict[oppTeam2][1]:
+                            running_spread.append((team2Dict[oppTeam2][1] - team1Dict[oppTeam1][1]))
+                            team2score += 1
     spread = 0
     for diff in running_spread:
         spread += diff

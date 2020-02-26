@@ -1,8 +1,10 @@
+# decoding=utf-8
 import requests
 import json
 import pandas as pd
 import sys
 import time
+import collections
 import common.populate_Data as popData
 import common.calculate_Data as calData
 from decimal import Decimal
@@ -13,6 +15,8 @@ def fixSyntax(team):
         team = team.replace("State", "St")
     if "Mississippi" in team:
         team = team.replace("Mississippi" , "Miss")
+    if "Jose" in team:
+        team = team.replace("Jose", "Jose" + u'\u0301')
     return team
 
 today = date.today()
@@ -104,7 +108,20 @@ for dailyGame in dailyGames:
 
 count = 0
 
-print(spreads)
+def findDifference(mySpread, lvSpread):
+    lvSpread = Decimal(lvSpread)
+    diff = 0
+    if mySpread > 0 :
+        if lvSpread < 0:
+            diff = lvSpread - mySpread
+        else :
+            diff = lvSpread - mySpread
+    elif mySpread < 0 :
+        if lvSpread > 0:
+            diff = lvSpread - mySpread
+        else :
+            diff = lvSpread - mySpread
+    return diff
 
 for game_spread in reversed(spreads):
     game_spread[0] = fixSyntax(game_spread[0])
@@ -114,24 +131,68 @@ for game_spread in reversed(spreads):
         if game_spread[0] in lv_odd["teams"]:
             if lv_odd["sites_count"] != 0 :
                 index = lv_odd["teams"].index(game_spread[0])
-                print(game_spread[0])
                 vegas_spread = lv_odd["sites"][0]["odds"]["spreads"]["points"][index]
-                print("Vegas line = " + str(vegas_spread))
-                print("My line = " + str(game_spread[2]))
-                diff = abs(game_spread[2] - Decimal(vegas_spread))
-                print("difference = " + str(diff))
-                sys.exit()
+                game_spread.append(vegas_spread)
+                game_spread.append(Decimal(vegas_spread)*-1)
+                game_spread.append(findDifference(game_spread[2], vegas_spread))
+                game_spread.append(findDifference(game_spread[3], Decimal(vegas_spread)*-1))
             odd_not_exist = 0
             count += 1
             break
         elif game_spread[1] in lv_odd["teams"]:
+            if lv_odd["sites_count"] != 0 :
+                index = lv_odd["teams"].index(game_spread[1])
+                vegas_spread = lv_odd["sites"][0]["odds"]["spreads"]["points"][index]
+                game_spread.append(Decimal(vegas_spread)*-1)
+                game_spread.append(vegas_spread)
+                game_spread.append(findDifference(game_spread[2], vegas_spread))
+                game_spread.append(findDifference(game_spread[3], vegas_spread))
             odd_not_exist = 0
             count += 1
             break
     if odd_not_exist:
         spreads.remove(game_spread)
 
+lock = collections.namedtuple('lock',['Team', 'MySpread', 'Vegasline', 'Diff'])
 
+# for game_spread in spreads:
+#     if 
+
+LOD = []
+for spread in spreads:
+    if len(spread) >= 5:
+        for x in range(6,8): 
+            if len(LOD) < 3:
+                LOD.append(lock(spread[x-6],spread[x-4],spread[x-2],spread[x]))
+            elif spread[x] > LOD[0].Diff :
+                if x == 6:
+                    LOD.insert(0,lock(spread[0],spread[2],spread[4],spread[6]))
+                if x == 7:
+                    LOD.insert(0,lock(spread[1],spread[3],spread[5],spread[7]))
+            elif spread[x] > LOD[1].Diff :
+                if x == 6:
+                    LOD.insert(1,lock(spread[0],spread[2],spread[4],spread[6]))
+                if x == 7:
+                    LOD.insert(1,lock(spread[1],spread[3],spread[5],spread[7]))
+            elif spread[x] > LOD[2].Diff :
+                if x == 6:
+                    LOD.insert(2,lock(spread[0],spread[2],spread[4],spread[6]))
+                if x == 7:
+                    LOD.insert(2,lock(spread[1],spread[3],spread[5],spread[7]))
+            if len(LOD) > 3:
+                LOD.pop()
+for x in range(0,4):
+    print("")
+print("Your locks of the day BIG DAWG")
+print("==================================")
+for lock in LOD:
+        print(lock)
+print"===================================="
+print("             Goodluck DEGEN")
+
+for x in range(0,4):
+    print("")
+sys.exit()
 sys.exit()
 
 
